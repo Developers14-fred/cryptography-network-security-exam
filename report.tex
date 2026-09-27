@@ -1,0 +1,65 @@
+---
+
+### 2. `report.tex`
+
+```latex
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{utf8}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+
+\geometry{margin=2.5cm}
+
+\title{\textbf{Technical Report: Cryptography and Network Security}\\ \large Integrated Situation Resolution}
+\author{\textbf{Student Name} \\ \small Module: ETTCS801 Cryptography and Network Security \\ \small Lecturer: Isaac TUMWINE}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Risk Assessment}
+An evaluation of the central server infrastructure at ULK Polytechnic Institute revealed significant security vulnerabilities. Three core risks were identified and ranked:
+
+\begin{enumerate}
+    \item \textbf{Remote Server Compromise (Critical):} Weak staff credentials and unpatched software enable brute-force attacks and Remote Code Execution (RCE).
+    \item \textbf{Inter-Campus Data Interception (High):} Unencrypted file transfers permit Man-in-the-Middle (MitM) attacks, risking grade tampering and confidentiality loss.
+    \item \textbf{Unauthorized Guest Access (Medium):} Unsegmented guest Wi-Fi networks allow local users to reach internal records servers.
+\end{enumerate}
+
+\subsection*{Recommended Controls}
+\begin{itemize}
+    \item Enforce Multi-Factor Authentication (MFA) and automated patch management.
+    \item Enforce SFTP/TLS encryption for all inter-campus transfers.
+    \item Implement network segmentation and firewall rules isolating guest subnets.
+\end{itemize}
+
+\section{Encryption, Decryption, and Integrity Toolkit}
+A Python program was developed using \texttt{cryptography.fernet} (AES-128) and \texttt{hashlib} (SHA-256).
+
+\begin{itemize}
+    \item \textbf{Encryption \& Decryption:} Files are encrypted into \texttt{.enc} format using a symmetric key saved outside the Git repository (\texttt{../secret.key}). Decryption restores the plaintext and verifies byte equality.
+    \item \textbf{Integrity Check:} SHA-256 hashes are calculated prior to encryption and after decryption. Any single-bit alteration in the source file triggers a security alert.
+\end{itemize}
+
+\section{Network Traffic Filtering}
+The \texttt{iptables} utility was used to restrict traffic to the HTTPS service (port 443) on the student records server (\texttt{10.0.1.50}):
+
+\begin{itemize}
+    \item \textbf{Staff Subnet (\texttt{10.0.10.0/24}):} PERMITTED (\texttt{ACCEPT}).
+    \item \textbf{Guest Subnet (\texttt{10.0.20.0/24}):} BLOCKED (\texttt{DROP}).
+    \item \textbf{All Other Inbound Connections:} BLOCKED (\texttt{DROP}).
+\end{itemize}
+
+Connectivity tests using \texttt{nc} and \texttt{curl} confirmed that only the authorized staff subnet can establish socket connections, successfully mitigating unauthorized network access.
+
+\section{Conclusion and Repository Link}
+All identified security gaps were successfully mitigated using cryptographic controls and strict firewall filtering rules.
+
+\vspace{0.5cm}
+\noindent \textbf{GitHub Repository URL:} \\
+\url{https://github.com/votre-compte/cryptography-network-security-exam}
+
+\end{document}
